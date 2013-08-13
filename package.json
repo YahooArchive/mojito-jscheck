@@ -1,0 +1,32 @@
+{
+    "name": "mojito-jscheck",
+    "version": "0.0.1",
+    "description": "This utility allows you to find out whether the user agent has JavaScript support as you are serving the request!",
+    "author": "Julien Lecomte <jlecomte@yahoo-inc.com>",
+    "contributors": [
+        "Julien Lecomte <jlecomte@yahoo-inc.com>",
+        "James Alley <jalley@yahoo-inc.com>"
+    ],
+    "engines": {
+        "node": "> 0.10",
+        "npm": "> 1.2",
+        "mojito": "> 0.7"
+    },
+    "devDependencies": {
+        "mojito": "0.7.x",
+        "mojito-cli": "~0.0.5"
+    },
+    "scripts": {
+        "test": "mojito test app"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/yahoo/mojito-jscheck.git"
+    },
+    "bugs": "https://github.com/yahoo/mojito-jscheck/issues",
+    "yahoo": {
+        "mojito": {
+            "type": "bundle"
+        }
+    }
+}
