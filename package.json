@@ -24,6 +24,10 @@
         "url": "git://github.com/yahoo/mojito-jscheck.git"
     },
     "bugs": "https://github.com/yahoo/mojito-jscheck/issues",
+    "licenses":[{
+        "type" : "BSD",
+        "url" : "https://github.com/yahoo/mojito-jscheck/blob/master/LICENSE.txt"
+    }],
     "yahoo": {
         "mojito": {
             "type": "bundle"
