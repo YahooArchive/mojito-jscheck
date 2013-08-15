@@ -1,12 +1,6 @@
 /*jslint nomen:true, indent: 4 */
 /*global YUI, YUITest, require, __dirname */
 
-/*
- * Mojito JSCheck Middleware Unit Tests.
- * Copyright (c) 2012 Yahoo! Inc. All rights reserved.
- * Licensed under the BSD license, see LICENSE file for terms.
- */
-
 YUI.add('yahoo.middleware.mojito-jscheck-tests', function (Y, NAME) {
     'use strict';
 
@@ -59,5 +53,4 @@ YUI.add('yahoo.middleware.mojito-jscheck-tests', function (Y, NAME) {
     }));
 
     YUITest.TestRunner.add(suite);
-
 });
