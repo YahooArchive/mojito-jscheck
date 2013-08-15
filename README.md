@@ -62,7 +62,7 @@ Any part of the configuration is optional. Here is a complete example:
         "param": "foo",
         "cookie": {
             "name": "bar",
-            "domain": "yahoo.com"
+            "domain": ".yahoo.com"
         }
     }
 
