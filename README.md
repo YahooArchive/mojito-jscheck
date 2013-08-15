@@ -8,7 +8,7 @@ coming from that user agent!
 Build Status
 ------------
 
-[![Build Status](https://secure.travis-ci.org/yahoo/mojito-jscheck.png)](http://travis-ci.org/yahoo/mojito-jscheck)
+[![Build Status](https://travis-ci.org/yahoo/mojito-jscheck.png)](https://travis-ci.org/yahoo/mojito-jscheck)
 
 Usage
 -----
