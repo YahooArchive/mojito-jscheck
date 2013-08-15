@@ -53,8 +53,8 @@ JavaScript since the cookie was initially set.
 the redirect sets the whole cycle in motion again.
 
 This system relies on two basic assumptions:
-1) The overwhelming majority of user agents have JavaScript turned on.
-2) JavaScript does not get switched on or off very often...
+1. The overwhelming majority of user agents have JavaScript turned on.
+2. JavaScript does not get switched on or off very often...
 
 Configuration
 -------------
