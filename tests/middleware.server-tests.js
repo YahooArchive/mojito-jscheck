@@ -34,9 +34,7 @@ YUI.add('yahoo.middleware.mojito-jscheck-tests', function (Y, NAME) {
             var headers = {},
 
                 req = {
-                    'query': {
-                        'js': '0'
-                    }
+                    url: '/search?p=whatever&js=0'
                 },
 
                 res = {
@@ -47,7 +45,7 @@ YUI.add('yahoo.middleware.mojito-jscheck-tests', function (Y, NAME) {
 
             mid(req, res, function () {
                 A.areSame(headers.hasOwnProperty('set-cookie'), true);
-                A.areSame(0, headers['set-cookie'].indexOf('js=0; domain=.yahoo.com; expires='));
+                A.areSame(0, headers['set-cookie'].indexOf('js=0;domain=.yahoo.com;expires='));
             });
         }
     }));

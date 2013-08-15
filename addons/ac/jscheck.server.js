@@ -29,7 +29,6 @@ YUI.add('yahoo.addons.jscheck', function (Y, NAME) {
         },
 
         jsCookieDestroyer,
-        jsParamRemover,
         jsParamRegexp,
 
         initialized = false;
@@ -52,22 +51,13 @@ YUI.add('yahoo.addons.jscheck', function (Y, NAME) {
             if (config.enabled) {
 
                 jsCookieDestroyer = '<script>' +
-                    'YUI().use("cookie",function(Y){' +
-                        'var now=new Date().getTime();' +
-                        'Y.Cookie.remove("' + config.cookie.name + '",{' +
-                            'domain:"' + config.cookie.domain + '",' +
-                            'removeIfEmpty:true' +
-                        '});' +
-                    '});' +
+                    'document.cookie="' +
+                        encodeURIComponent(config.cookie.name) + '=' +
+                        ';expires="+new Date(0).toUTCString()' +
+                        (config.cookie.domain ? '+";domain=' + encodeURIComponent(config.cookie.domain) + '"' : '') + ';' +
                     '</script>';
 
-                jsParamRemover = '<script>' +
-                    'if(document.location.toString().indexOf("&' + config.param + '=0")>=0){' +
-                        'document.location=document.location.toString().replace(/&' + config.param + '=0/ig,"");' +
-                    '}' +
-                    '</script>';
-
-                jsParamRegexp = new RegExp('&' + config.param + '=([^&]*)');
+                jsParamRegexp = new RegExp('&' + encodeURIComponent(config.param) + '=([^&]*)');
             }
 
             initialized = true;
@@ -82,26 +72,26 @@ YUI.add('yahoo.addons.jscheck', function (Y, NAME) {
         namespace: 'jscheck',
 
         /**
-         * Indicates whether JavaScript has been disabled.
-         * Enquiring mojits want to know.
+         * Indicates whether the user agent has JavaScript enabled.
          *
          * @method status
-         * @param {ActionContext} ac
-         * @protected
+         * @return {String}
          */
         status: function () {
-            var cookieValue, m;
-
             if (!config.enabled) {
                 return JS_IS_INDETERMINATE;
             }
 
-            cookieValue = this.ac.cookie.get(config.cookie.name.toLowerCase());
+            var cookieValue, m;
+
+            cookieValue = this.ac.cookie.get(encodeURIComponent(config.cookie.name.toLowerCase()));
+
             if (cookieValue === '0') {
                 return JS_IS_DISABLED;
             }
 
             m = this.originalUrl.match(jsParamRegexp);
+
             if (m && m[1] === '0') {
                 return JS_IS_DISABLED;
             }
@@ -110,12 +100,10 @@ YUI.add('yahoo.addons.jscheck', function (Y, NAME) {
         },
 
         /**
-         * Depending on the status, runs certain actions, which in turn
-         * can affect the reported status.
+         * Depending on the status, runs certain actions, which in turn can
+         * affect the reported status for that user in future requests...
          *
          * @method run
-         * @param {ActionContext} ac
-         * @protected
          */
         run: function () {
             if (!config.enabled) {
@@ -131,15 +119,7 @@ YUI.add('yahoo.addons.jscheck', function (Y, NAME) {
             Y.log('JavaScript appears to be ' + status, 'info', NAME);
 
             if (status === JS_IS_DISABLED) {
-
-                // The user is cookied as having javascript off or the "js"
-                // parameter is set in the url. Thus, set a script to destroy
-                // the cookie if JavaScript gets turned on. Also resets URL
-                // to help CSF...
-
-                ac.assets.addBlob(jsParamRemover, 'top');
                 ac.assets.addBlob(jsCookieDestroyer, 'bottom');
-
                 return;
             }
 
@@ -155,24 +135,19 @@ YUI.add('yahoo.addons.jscheck', function (Y, NAME) {
 
             redirectUrl = this.originalUrl;
 
-            // Without the cookie or flag in url, we presume JS is enabled.
-            // Thus, in a noscript tag, redirect to a url flagged as js=0.
-            // That will trigger middleware and the former case.
-
             if (redirectUrl.indexOf('?') === -1) {
                 redirectUrl += '?';
             } else {
                 redirectUrl += '&';
             }
 
-            redirectUrl += config.param + '=0';
+            redirectUrl += encodeURIComponent(config.param) + '=0';
 
             try {
                 // Avoid XSS...
                 redirectUrl = encodeURI(redirectUrl);
             } catch (e) {
-                Y.log(e.message + '\n[redirectUrl was "' + redirectUrl + '"]',
-                    'warn', NAME);
+                Y.log(e.message + '\n[redirectUrl was "' + redirectUrl + '"]', 'warn', NAME);
                 return;
             }
 
