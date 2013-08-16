@@ -69,5 +69,5 @@ Any part of the configuration is optional. Here is a complete example:
         }
     }
 
-With `jscheck.enabled` set to false, ac.jscheck.status() will return
-"indeterminate" and the run() function will not execute any meaningful code.
+With `jscheck.enabled` set to false, `ac.jscheck.status()` will return
+"indeterminate" and `ac.jscheck.run()` will not execute any meaningful code.
