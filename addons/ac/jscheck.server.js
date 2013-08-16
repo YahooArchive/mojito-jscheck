@@ -10,10 +10,10 @@
 /**
  * Routines to report on whether the user agent has JavaScript disabled.
  *
- * @module yahoo.addons.jscheck
+ * @module mojito-jscheck-addon
  */
 
-YUI.add('yahoo.addons.jscheck', function (Y, NAME) {
+YUI.add('mojito-jscheck-addon', function (Y, NAME) {
     'use strict';
 
     var JS_IS_DISABLED = 'disabled',
@@ -37,7 +37,7 @@ YUI.add('yahoo.addons.jscheck', function (Y, NAME) {
      * <strong>Access point:</strong> <em>ac.jscheck.*</em>
      * This server-side jscheck add-on allows you to easily determine
      * whether JavaScript is enabled or disabled on the client.
-     * @class ac.jscheck
+     * @class mojito.addons.ac.jscheck
      * @constructor
      */
     function Addon(command, adapter, ac) {

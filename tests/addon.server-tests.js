@@ -1,11 +1,13 @@
 /*jslint nomen: true, indent: 4 */
 /*global YUI, YUITest */
 
-YUI.add('yahoo.addons.jscheck-tests', function (Y, NAME) {
+YUI.add('mojito-jscheck-addon-tests', function (Y, NAME) {
     'use strict';
 
     var A = YUITest.Assert,
         Value = YUITest.Mock.Value,
+
+        addon = 'mojito-jscheck-addon',
 
         suite = new YUITest.TestSuite(NAME),
 
@@ -27,7 +29,7 @@ YUI.add('yahoo.addons.jscheck-tests', function (Y, NAME) {
 
         setUp: function () {
 
-            Y.use('yahoo.addons.jscheck');
+            Y.use(addon);
 
             ac = new Y.mojito.MockActionContext({
                 addons: ['config', 'params', 'cookie', 'assets', 'http']
@@ -74,7 +76,7 @@ YUI.add('yahoo.addons.jscheck-tests', function (Y, NAME) {
         },
 
         tearDown: function () {
-            delete Y.Env._attached['yahoo.addons.jscheck'];
+            delete Y.Env._attached[addon];
         },
 
         'status() should return JS_IS_INDETERMINATE if jscheck is disabled': function () {
@@ -90,8 +92,8 @@ YUI.add('yahoo.addons.jscheck-tests', function (Y, NAME) {
 
             // For this test only, we have to recreate the addon because the
             // config is cached after the first instantiation of the addon...
-            delete Y.Env._attached['yahoo.addons.jscheck'];
-            Y.use('yahoo.addons.jscheck');
+            delete Y.Env._attached[addon];
+            Y.use(addon);
             ac.jscheck = new Y.mojito.addons.ac.jscheck(command, adapter, ac);
 
             A.areSame(JS_IS_INDETERMINATE, ac.jscheck.status());

@@ -23,7 +23,7 @@ In your application configuration file, add the `mojito-jscheck` middleware:
         ...
     ]
 
-In a controller, add `yahoo.addons.jscheck` as a dependency. Then, call
+In a controller, add `mojito-jscheck-addon` as a dependency. Then, call
 `ac.jscheck.run()` before `ac.done()`. This puts you into the jscheck
 cycle of redirects and cookie-setting which will establish your status.
 
