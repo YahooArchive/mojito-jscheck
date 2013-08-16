@@ -42,8 +42,7 @@ However, it is important to design web pages to degrade gracefully in case this
 guess happened to be incorrect (which will happen, albeit very rarely due to
 the persistence of the cookie we set)
 * When calling `ac.jscheck.run()` in the "enabled" state, the jscheck add-on
-inserts a META tag inside a NOSCRIPT tag to redirect the user to [originalUrl]
-+ &js=0.
+inserts a META tag inside a NOSCRIPT tag to redirect the user to [originalUrl]+&js=0
 * The jscheck middleware sees js=0 in the url and sets a cookie (js=0).
 * The jscheck add-on sees the cookie and reports the status as "disabled".
 * When calling `ac.jscheck.run()` in the "disabled" state, the jscheck add-on
