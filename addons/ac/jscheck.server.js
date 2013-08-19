@@ -28,7 +28,7 @@ YUI.add('mojito-jscheck-addon', function (Y, NAME) {
             }
         },
 
-        jsCookieDestroyer,
+        nojsHandler,
         jsParamRegexp,
 
         initialized = false;
@@ -50,14 +50,15 @@ YUI.add('mojito-jscheck-addon', function (Y, NAME) {
 
             if (config.enabled) {
 
-                jsCookieDestroyer = '<script>' +
+                nojsHandler = '<script>' +
                     'document.cookie="' +
                         encodeURIComponent(config.cookie.name) + '=' +
                         ';expires="+new Date(0).toUTCString()' +
                         (config.cookie.domain ? '+";domain=' + encodeURIComponent(config.cookie.domain) + '"' : '') + ';' +
+                    'location.replace(location.href.replace(/[?&]' + encodeURIComponent(config.param) + '=0/g,""));' +
                     '</script>';
 
-                jsParamRegexp = new RegExp('&' + encodeURIComponent(config.param) + '=([^&]*)');
+                jsParamRegexp = new RegExp('[?&]' + encodeURIComponent(config.param) + '=([^&]*)');
             }
 
             initialized = true;
@@ -119,7 +120,7 @@ YUI.add('mojito-jscheck-addon', function (Y, NAME) {
             Y.log('JavaScript appears to be ' + status, 'info', NAME);
 
             if (status === JS_IS_DISABLED) {
-                ac.assets.addBlob(jsCookieDestroyer, 'bottom');
+                ac.assets.addBlob(nojsHandler, 'bottom');
                 return;
             }
 
