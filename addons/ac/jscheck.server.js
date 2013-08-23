@@ -44,7 +44,9 @@ YUI.add('mojito-jscheck-addon', function (Y, NAME) {
 
         if (!initialized) {
 
-            // Here, we compute a few things once, for better performance...
+            // Here, we compute a few things once, for better performance.
+            // Note: the configuration is checked in the middleware, so we don't
+            // need to duplicate that code...
 
             Y.mix(config, ac.config.getAppConfig().jscheck, true, null, 0, true);
 

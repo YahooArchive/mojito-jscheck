@@ -15,9 +15,13 @@ Usage
 
 In your app's package.json, add the `mojito-jscheck` package as a dependency.
 
-In your application configuration file, add the `mojito-jscheck` middleware:
+In your application configuration file, add the `mojito-jscheck` middleware.
+Note that it needs to appear after `mojito-parser-cookies` since it uses
+req.cookies...
 
     "middleware": [
+        ...
+        "mojito-parser-cookies",
         ...
         "./node_modules/mojito-jscheck/middleware/mojito-jscheck.js",
         ...
@@ -71,3 +75,11 @@ Any part of the configuration is optional. Here is a complete example:
 
 With `jscheck.enabled` set to false, `ac.jscheck.status()` will return
 "indeterminate" and `ac.jscheck.run()` will not execute any meaningful code.
+
+Notes
+-----
+
+* jscheck does not support setting a sub-cookie. When writing the code, we
+considered it. However, there is little value in doing so. Also, the wildly
+varying formats used to encode sub-cookies, sign them, encode them, etc.
+would make this task difficult...

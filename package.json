@@ -1,6 +1,6 @@
 {
     "name": "mojito-jscheck",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "This utility allows you to find out whether the user agent has JavaScript support as you are serving the request!",
     "author": "Julien Lecomte <jlecomte@yahoo-inc.com>",
     "contributors": [
