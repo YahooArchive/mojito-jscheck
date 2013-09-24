@@ -53,11 +53,36 @@ YUI.add('mojito-jscheck-addon', function (Y, NAME) {
             if (config.enabled) {
 
                 nojsHandler = '<script>' +
+
                     'document.cookie="' +
                         encodeURIComponent(config.cookie.name) + '=' +
                         ';expires="+new Date(0).toUTCString()' +
                         (config.cookie.domain ? '+";domain=' + encodeURIComponent(config.cookie.domain) + '"' : '') + ';' +
-                    'location.replace(location.href.replace(/[?&]' + encodeURIComponent(config.param) + '=0/g,""));' +
+
+                    // This test is there to address misconfigured applications!
+                    //
+                    // * Let's consider the following two applications:
+                    //   - A is accessible from domain A.example.com
+                    //   - B is accessible from domain B.example.com
+                    // * Both applications use mojito-jscheck.
+                    // * A sets the "js" cookie on .example.com.
+                    // * B does not have a domain configured for the "js" cookie.
+                    // * Let's consider that the user-agent has the "js" cookie
+                    //   set after visiting application A.
+                    // * Let's also consider that the user-agent has since
+                    //   re-enabled JavaScript...
+                    //
+                    // -> When visiting application B, the client-side snippet
+                    // will not be able to remove the "js" cookie and the
+                    // browser will start refreshing the page in an infinite
+                    // loop...
+
+                    'if(!/(^|;\\s*)' + Y.Escape.regex(encodeURIComponent(config.cookie.name)) + '=/.test(document.cookie)){' +
+                        'location.replace(location.href.replace(/[?&]' + encodeURIComponent(config.param) + '=0/g,""));' +
+                    '}else if(typeof console!=="undefined"&&console.log){' +
+                        'console.log("[mojito-jscheck] Cookie could not be removed - Check your application settings!");' +
+                    '}' +
+
                     '</script>';
 
                 jsParamRegexp = new RegExp('[?&]' + encodeURIComponent(config.param) + '=([^&]*)');
@@ -169,6 +194,7 @@ YUI.add('mojito-jscheck-addon', function (Y, NAME) {
         'mojito-params-addon',
         'mojito-cookie-addon',
         'mojito-assets-addon',
-        'mojito-http-addon'
+        'mojito-http-addon',
+        'escape'
     ]
 });
