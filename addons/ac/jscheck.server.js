@@ -92,7 +92,7 @@ YUI.add('mojito-jscheck-addon', function (Y, NAME) {
         }
 
         this.ac = ac;
-        this.originalUrl = ac.http.getRequest().originalUrl;
+        this.originalUrl = ac.http.getRequest().url;
 
         var req = adapter.req;
 
