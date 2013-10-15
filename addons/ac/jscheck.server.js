@@ -93,6 +93,17 @@ YUI.add('mojito-jscheck-addon', function (Y, NAME) {
 
         this.ac = ac;
         this.originalUrl = ac.http.getRequest().originalUrl;
+
+        var req = adapter.req;
+
+        if (!req.globals) {
+            req.globals = {};
+        }
+
+        if (req.globals['jscheck.addon']) {
+            // Return our per-request singleton.
+            return req.globals['jscheck.addon'];
+        }
     }
 
     Addon.prototype = {
@@ -134,6 +145,10 @@ YUI.add('mojito-jscheck-addon', function (Y, NAME) {
          * @method run
          */
         run: function () {
+            // This add-on is a singleton. By doing the following, we ensure
+            // that subsequent calls to the run() method will not do anything...
+            this.run = function () {};
+
             if (!config.enabled) {
                 return;
             }

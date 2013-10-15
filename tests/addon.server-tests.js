@@ -16,7 +16,11 @@ YUI.add('mojito-jscheck-addon-tests', function (Y, NAME) {
         JS_IS_INDETERMINATE = 'indeterminate',
 
         command = {},
-        adapter = {},
+
+        adapter = {
+            req: {}
+        },
+
         ac;
 
     Y.applyConfig({
