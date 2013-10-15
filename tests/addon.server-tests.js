@@ -61,7 +61,7 @@ YUI.add('mojito-jscheck-addon-tests', function (Y, NAME) {
             ac.http.expect({
                 method: 'getRequest',
                 returns: {
-                    originalUrl: '/search?p=query'
+                    url: '/search?p=query'
                 }
             });
 
@@ -127,7 +127,7 @@ YUI.add('mojito-jscheck-addon-tests', function (Y, NAME) {
             ac.http.expect({
                 method: 'getRequest',
                 returns: {
-                    originalUrl: '/search?p=query&js=0'
+                    url: '/search?p=query&js=0'
                 }
             });
 
