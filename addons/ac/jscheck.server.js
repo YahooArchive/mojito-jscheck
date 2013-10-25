@@ -187,12 +187,8 @@ YUI.add('mojito-jscheck-addon', function (Y, NAME) {
             redirectUrl += encodeURIComponent(config.param) + '=0';
 
             try {
-                // Avoid XSS...
-                // Note: %20 is first replaced by a white space. encodeURI will
-                // convert it back to %20. This is to avoid double encoding...
-                // Note: We may need to add other characters. I'm waiting to
-                // see if anybody reports a bug first...
-                redirectUrl = encodeURI(redirectUrl.replace('%20', ' '));
+                // Avoid XSS, but avoid double encoding...
+                redirectUrl = encodeURI(redirectUrl).replace(/%25/g, '%');
             } catch (e) {
                 Y.log(e.message + '\n[redirectUrl was "' + redirectUrl + '"]', 'warn', NAME);
                 return;
