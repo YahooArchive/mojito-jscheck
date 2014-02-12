@@ -69,18 +69,6 @@ Any part of the configuration is optional. Here is a complete example:
         "param": "foo",
         "cookie": {
             "name": "bar",
-            "domain": ".my.domain.com",
-            "expiration": 2592000
-        }
-    }
-
-And here is another example if you wish to use a sub-cookie:
-
-    "jscheck": {
-        "enabled": true,
-        "param": "foo",
-        "cookie": {
-            "name": "bar",
             "sub": "baz",
             "domain": ".my.domain.com",
             "expiration": 2592000
