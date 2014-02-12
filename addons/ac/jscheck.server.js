@@ -4,7 +4,7 @@
  * See the accompanying LICENSE file for terms.
  */
 
-/*jslint indent: 4 */
+/*jslint node: true, nomen: true, stupid: true, indent: 4 */
 /*global YUI */
 
 /**
@@ -20,8 +20,14 @@ YUI.add('mojito-jscheck-addon', function (Y, NAME) {
         JS_IS_ENABLED = 'enabled',
         JS_IS_INDETERMINATE = 'indeterminate',
 
+        path = require('path'),
+        fs = require('fs'),
+        qs = require('querystring'),
+        UglifyJS = require('uglify-js'),
+
         config = {
             enabled: true,
+            jsmin: true,
             param: 'js',
             cookie: {
                 name: 'js'
@@ -41,49 +47,29 @@ YUI.add('mojito-jscheck-addon', function (Y, NAME) {
      * @constructor
      */
     function Addon(command, adapter, ac) {
+        var code, req;
 
         if (!initialized) {
 
             // Here, we compute a few things once, for better performance.
-            // Note: the configuration is checked in the middleware, so we don't
-            // need to duplicate that code...
+            // Note: the configuration is checked in the middleware, so we
+            // don't need to duplicate that code...
 
             Y.mix(config, ac.config.getAppConfig().jscheck, true, null, 0, true);
 
             if (config.enabled) {
 
-                nojsHandler = '<script>' +
+                code = fs.readFileSync(path.join(__dirname, '../../assets/jscheck-manual-inline.js'), 'utf-8');
 
-                    'document.cookie="' +
-                        encodeURIComponent(config.cookie.name) + '=' +
-                        ';expires="+new Date(0).toUTCString()' +
-                        (config.cookie.domain ? '+";domain=' + encodeURIComponent(config.cookie.domain) + '"' : '') + ';' +
+                if (config.jsmin) {
+                    try {
+                        code = UglifyJS.minify(code, { fromString: true }).code;
+                    } catch (e) {
+                        Y.log(e.message, 'warn', NAME);
+                    }
+                }
 
-                    // This test is there to address misconfigured applications!
-                    //
-                    // * Let's consider the following two applications:
-                    //   - A is accessible from domain A.example.com
-                    //   - B is accessible from domain B.example.com
-                    // * Both applications use mojito-jscheck.
-                    // * A sets the "js" cookie on .example.com.
-                    // * B does not have a domain configured for the "js" cookie.
-                    // * Let's consider that the user-agent has the "js" cookie
-                    //   set after visiting application A.
-                    // * Let's also consider that the user-agent has since
-                    //   re-enabled JavaScript...
-                    //
-                    // -> When visiting application B, the client-side snippet
-                    // will not be able to remove the "js" cookie and the
-                    // browser will start refreshing the page in an infinite
-                    // loop...
-
-                    'if(!/(^|;\\s*)' + Y.Escape.regex(encodeURIComponent(config.cookie.name)) + '=/.test(document.cookie)){' +
-                        'location.replace(location.href.replace(/[?&]' + encodeURIComponent(config.param) + '=0/g,""));' +
-                    '}else if(typeof console!=="undefined"&&console.log){' +
-                        'console.log("[mojito-jscheck] Cookie could not be removed - Check your application settings!");' +
-                    '}' +
-
-                    '</script>';
+                nojsHandler = '<script>(' + code + ')(' + JSON.stringify(config) + ');</script>';
 
                 jsParamRegexp = new RegExp('[?&]' + encodeURIComponent(config.param) + '=([^&]*)');
             }
@@ -94,7 +80,7 @@ YUI.add('mojito-jscheck-addon', function (Y, NAME) {
         this.ac = ac;
         this.originalUrl = ac.http.getRequest().url;
 
-        var req = adapter.req;
+        req = adapter.req;
 
         if (!req.globals) {
             req.globals = {};
@@ -121,11 +107,17 @@ YUI.add('mojito-jscheck-addon', function (Y, NAME) {
                 return JS_IS_INDETERMINATE;
             }
 
-            var cookieValue, m;
+            var v, o, m;
 
-            cookieValue = this.ac.cookie.get(encodeURIComponent(config.cookie.name.toLowerCase()));
+            // .toLowerCase() is needed because of the normalization of cookie names in Node.JS/Mojito...
+            v = this.ac.cookie.get(encodeURIComponent(config.cookie.name.toLowerCase()));
 
-            if (cookieValue === '0') {
+            if (config.cookie.sub) {
+                o = qs.parse(v);
+                v = o[config.cookie.sub];
+            }
+
+            if (v === '0') {
                 return JS_IS_DISABLED;
             }
 

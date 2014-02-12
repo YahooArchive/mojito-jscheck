@@ -66,6 +66,36 @@ YUI.add('yahoo.middleware.mojito-jscheck-tests', function (Y, NAME) {
                 };
 
             mid(req, res, next);
+        },
+
+        'js=0 is in the url, so the middleware should set the sub-cookie': function () {
+            appConfig.jscheck.cookie.name = 'sB';
+            appConfig.jscheck.cookie.sub = 'js';
+            appConfig.jscheck.cookie.domain = '.search.yahoo.com';
+            appConfig.jscheck.cookie.expiration = 60 * 60 * 24 * 30; // 30 days
+            mid = require(midPath)(midConfig);
+
+            var headers = {},
+
+                req = {
+                    url: '/search?p=whatever&js=0',
+                    cookies: {
+                        sB: 'vm=p&sh=1&rw=new&v=1'
+                    }
+                },
+
+                res = {
+                    setHeader: function (key, val) {
+                        headers[key.toLowerCase()] = val;
+                    }
+                },
+
+                next = function () {
+                    A.areSame(headers.hasOwnProperty('set-cookie'), true);
+                    A.areSame(0, headers['set-cookie'].indexOf('sB=vm=p&sh=1&rw=new&v=1&js=0;domain=.search.yahoo.com;expires='));
+                };
+
+            mid(req, res, next);
         }
     }));
 

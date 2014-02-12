@@ -94,7 +94,7 @@ YUI.add('mojito-jscheck-addon-tests', function (Y, NAME) {
                 }
             });
 
-            // For this test only, we have to recreate the addon because the
+            // For this test, we have to recreate the addon because the
             // config is cached after the first instantiation of the addon...
             delete Y.Env._attached[addon];
             Y.use(addon);
@@ -105,6 +105,33 @@ YUI.add('mojito-jscheck-addon-tests', function (Y, NAME) {
         },
 
         'status() should return JS_IS_ENABLED by default (no js=0 in url and no "js" cookie set)': function () {
+            A.areSame(JS_IS_ENABLED, ac.jscheck.status());
+            ac.jscheck.run();
+        },
+
+        'status() should return JS_IS_ENABLED by default (no js=0 in url and no "js" sub-cookie set)': function () {
+
+            ac.config.expect({
+                method: 'getAppConfig',
+                returns: {
+                    jscheck: {
+                        enabled: true,
+                        param: 'js',
+                        cookie: {
+                            name: 'sB',
+                            sub: 'js',
+                            domain: '.search.yahoo.com',
+                            expiration: 60 * 60 * 24 * 30
+                        }
+                    }
+                }
+            });
+
+            // For this test, we have to recreate the addon because the
+            // config is cached after the first instantiation of the addon...
+            delete Y.Env._attached[addon];
+            Y.use(addon);
+            ac.jscheck = new Y.mojito.addons.ac.jscheck(command, adapter, ac);
 
             A.areSame(JS_IS_ENABLED, ac.jscheck.status());
             ac.jscheck.run();
@@ -116,6 +143,40 @@ YUI.add('mojito-jscheck-addon-tests', function (Y, NAME) {
                 method: 'get',
                 args: [Value.String],
                 returns: '0'
+            });
+
+            A.areSame(JS_IS_DISABLED, ac.jscheck.status());
+            ac.jscheck.run();
+        },
+
+        'status() should return JS_IS_DISABLED if the "js" sub-cookie is set to "0"': function () {
+
+            ac.config.expect({
+                method: 'getAppConfig',
+                returns: {
+                    jscheck: {
+                        enabled: true,
+                        param: 'js',
+                        cookie: {
+                            name: 'sB',
+                            sub: 'js',
+                            domain: '.search.yahoo.com',
+                            expiration: 60 * 60 * 24 * 30
+                        }
+                    }
+                }
+            });
+
+            // For this test, we have to recreate the addon because the
+            // config is cached after the first instantiation of the addon...
+            delete Y.Env._attached[addon];
+            Y.use(addon);
+            ac.jscheck = new Y.mojito.addons.ac.jscheck(command, adapter, ac);
+
+            ac.cookie.expect({
+                method: 'get',
+                args: [Value.String],
+                returns: 'vm=p&sh=1&rw=new&v=1&js=0'
             });
 
             A.areSame(JS_IS_DISABLED, ac.jscheck.status());
