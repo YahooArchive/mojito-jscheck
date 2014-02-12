@@ -12,7 +12,8 @@ YUI.add('yahoo.middleware.mojito-jscheck-tests', function (Y, NAME) {
         appConfig = {
             jscheck: {
                 cookie: {
-                    domain: '.yahoo.com'
+                    domain: '.my.domain.com',
+                    expiration: 2592000
                 }
             }
         },
@@ -62,7 +63,7 @@ YUI.add('yahoo.middleware.mojito-jscheck-tests', function (Y, NAME) {
 
                 next = function () {
                     A.areSame(headers.hasOwnProperty('set-cookie'), true);
-                    A.areSame(0, headers['set-cookie'].indexOf('js=0;domain=.yahoo.com;expires='));
+                    A.areSame(0, headers['set-cookie'].indexOf('js=0;domain=.my.domain.com;expires='));
                 };
 
             mid(req, res, next);
@@ -71,8 +72,9 @@ YUI.add('yahoo.middleware.mojito-jscheck-tests', function (Y, NAME) {
         'js=0 is in the url, so the middleware should set the sub-cookie': function () {
             appConfig.jscheck.cookie.name = 'sB';
             appConfig.jscheck.cookie.sub = 'js';
-            appConfig.jscheck.cookie.domain = '.search.yahoo.com';
+            appConfig.jscheck.cookie.domain = '.my.sub.domain.com';
             appConfig.jscheck.cookie.expiration = 60 * 60 * 24 * 30; // 30 days
+
             mid = require(midPath)(midConfig);
 
             var headers = {},
@@ -80,7 +82,7 @@ YUI.add('yahoo.middleware.mojito-jscheck-tests', function (Y, NAME) {
                 req = {
                     url: '/search?p=whatever&js=0',
                     cookies: {
-                        sB: 'vm=p&sh=1&rw=new&v=1'
+                        sb: 'vm=p&sh=1&rw=new&v=1'
                     }
                 },
 
@@ -92,7 +94,7 @@ YUI.add('yahoo.middleware.mojito-jscheck-tests', function (Y, NAME) {
 
                 next = function () {
                     A.areSame(headers.hasOwnProperty('set-cookie'), true);
-                    A.areSame(0, headers['set-cookie'].indexOf('sB=vm=p&sh=1&rw=new&v=1&js=0;domain=.search.yahoo.com;expires='));
+                    A.areSame(0, headers['set-cookie'].indexOf('sB=vm=p&sh=1&rw=new&v=1&js=0;domain=.my.sub.domain.com;expires='));
                 };
 
             mid(req, res, next);
