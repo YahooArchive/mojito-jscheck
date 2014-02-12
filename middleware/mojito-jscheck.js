@@ -16,7 +16,6 @@ module.exports = function (midConfig) {
         L = Y.Lang,
 
         config = {
-            enabled: true,
             param: 'js',
             cookie: {
                 name: 'js'
@@ -60,14 +59,17 @@ module.exports = function (midConfig) {
             cookieHdrVal += ';domain=' + encodeURIComponent(config.cookie.domain);
         }
 
-        // The "js" cookie will expire in 12 months. If the user agent
-        // starts supporting JavaScript all of a sudden, the cookie will
-        // be removed, so the exact value of the expiration date is not
-        // absolutely critical...
+        if (config.cookie.expiration) {
 
-        expiration = new Date();
-        expiration.setFullYear(expiration.getFullYear() + 1);
-        cookieHdrVal += ';expires=' + expiration.toUTCString();
+            // The "js" cookie will expire some time in the future. If the user
+            // agent starts supporting JavaScript all of a sudden, the cookie
+            // will be removed, so the exact value of the expiration date is not
+            // absolutely critical...
+
+            expiration = new Date();
+            expiration.setTime(expiration.getTime() + config.cookie.expiration * 1000);
+            cookieHdrVal += ';expires=' + expiration.toUTCString();
+        }
 
         res.setHeader('Set-Cookie', cookieHdrVal);
     }
@@ -78,7 +80,7 @@ module.exports = function (midConfig) {
 
     //-- Return a NOOP middleware if jscheck is disabled ----------------------
 
-    if (!config.enabled) {
+    if (config.hasOwnProperty('enabled') && !config.enabled) {
         return function (req, res, next) {
             next();
         };
@@ -86,7 +88,8 @@ module.exports = function (midConfig) {
 
     //-- Validate configuration -----------------------------------------------
 
-    if (!L.isBoolean(config.enabled) ||
+    if ((config.hasOwnProperty('enabled') &&
+            !L.isBoolean(config.enabled)) ||
             !L.isString(config.param) ||
             !L.isObject(config.cookie) ||
             !L.isString(config.cookie.name) ||
@@ -96,7 +99,7 @@ module.exports = function (midConfig) {
                  config.cookie.expiration <= 0)) ||
             (config.cookie.hasOwnProperty('domain') &&
                 !L.isString(config.cookie.domain))) {
-        throw new Error('Invalid configuration');
+        throw new Error('[mojito-jscheck] Invalid configuration');
     }
 
     config.param = L.trim(config.param);
@@ -116,7 +119,7 @@ module.exports = function (midConfig) {
                 !config.cookie.sub.length) ||
             (config.cookie.hasOwnProperty('domain') &&
                 !config.cookie.domain.length)) {
-        throw new Error('Invalid configuration');
+        throw new Error('[mojito-jscheck] Invalid configuration');
     }
 
     //-- Return a full-featured middleware if jscheck is enabled --------------

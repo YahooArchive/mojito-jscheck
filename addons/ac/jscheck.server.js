@@ -27,7 +27,6 @@ YUI.add('mojito-jscheck-addon', function (Y, NAME) {
 
         config = {
             enabled: true,
-            jsmin: true,
             param: 'js',
             cookie: {
                 name: 'js'
@@ -57,11 +56,11 @@ YUI.add('mojito-jscheck-addon', function (Y, NAME) {
 
             Y.mix(config, ac.config.getAppConfig().jscheck, true, null, 0, true);
 
-            if (config.enabled) {
+            if (!config.hasOwnProperty('enabled') || config.enabled) {
 
                 code = fs.readFileSync(path.join(__dirname, '../../assets/jscheck-manual-inline.js'), 'utf-8');
 
-                if (config.jsmin) {
+                if (!config.hasOwnProperty('jsmin') || config.jsmin) {
                     try {
                         code = UglifyJS.minify(code, { fromString: true }).code;
                     } catch (e) {
@@ -103,7 +102,7 @@ YUI.add('mojito-jscheck-addon', function (Y, NAME) {
          * @return {String}
          */
         status: function () {
-            if (!config.enabled) {
+            if (config.hasOwnProperty('enabled') && !config.enabled) {
                 return JS_IS_INDETERMINATE;
             }
 
@@ -141,7 +140,7 @@ YUI.add('mojito-jscheck-addon', function (Y, NAME) {
             // that subsequent calls to the run() method will not do anything...
             this.run = function () {};
 
-            if (!config.enabled) {
+            if (config.hasOwnProperty('enabled') && !config.enabled) {
                 return;
             }
 

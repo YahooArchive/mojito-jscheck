@@ -71,7 +71,7 @@ function f(config) {
             delete o[ck.sub];
 
             exp = new Date();
-            exp.setTime(exp.getTime() + ck.expiration);
+            exp.setTime(exp.getTime() + ck.expiration * 1000);
 
             d.cookie = encode(ck.name) + '=' + stringify(o) +
                 ';expires=' + exp.toUTCString() +
