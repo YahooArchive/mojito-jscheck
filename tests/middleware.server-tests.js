@@ -1,7 +1,7 @@
 /*jslint nomen:true, indent: 4 */
 /*global YUI, YUITest, require, __dirname */
 
-YUI.add('yahoo.middleware.mojito-jscheck-tests', function (Y, NAME) {
+YUI.add('mojito-jscheck-middleware-tests', function (Y, NAME) {
     'use strict';
 
     var A = YUITest.Assert,
@@ -82,7 +82,7 @@ YUI.add('yahoo.middleware.mojito-jscheck-tests', function (Y, NAME) {
                 req = {
                     url: '/search?p=whatever&js=0',
                     cookies: {
-                        sb: 'vm=p&sh=1&rw=new&v=1'
+                        sB: 'vm=p&sh=1&rw=new&v=1'
                     }
                 },
 

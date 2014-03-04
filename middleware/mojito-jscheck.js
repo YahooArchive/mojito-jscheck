@@ -29,7 +29,7 @@ module.exports = function (midConfig) {
         var s, o;
 
         if (req.cookies) {
-            s = req.cookies[encodeURIComponent(config.cookie.name.toLowerCase())];
+            s = req.cookies[encodeURIComponent(config.cookie.name)];
 
             if (config.cookie.sub) {
                 o = libqs.parse(s);
@@ -47,7 +47,7 @@ module.exports = function (midConfig) {
         var s, o, cookieHdrVal, expiration;
 
         if (config.cookie.sub) {
-            s = req.cookies[encodeURIComponent(config.cookie.name.toLowerCase())];
+            s = req.cookies[encodeURIComponent(config.cookie.name)];
             o = libqs.parse(s);
             o[config.cookie.sub] = value;
             cookieHdrVal = encodeURIComponent(config.cookie.name) + '=' + libqs.stringify(o);

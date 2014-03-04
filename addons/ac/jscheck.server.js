@@ -108,8 +108,7 @@ YUI.add('mojito-jscheck-addon', function (Y, NAME) {
 
             var v, o, m;
 
-            // .toLowerCase() is needed because of the normalization of cookie names in Node.JS/Mojito...
-            v = this.ac.cookie.get(encodeURIComponent(config.cookie.name.toLowerCase()));
+            v = this.ac.cookie.get(encodeURIComponent(config.cookie.name));
 
             if (config.cookie.sub) {
                 o = qs.parse(v);
