@@ -149,7 +149,7 @@ YUI.add('mojito-jscheck-addon', function (Y, NAME) {
                 redirectUrl,
                 nojsRedirect;
 
-            Y.log('JavaScript appears to be ' + status, 'info', NAME);
+            Y.log('JavaScript appears to be ' + status, 'debug', NAME);
 
             if (status === JS_IS_DISABLED) {
                 ac.assets.addBlob(nojsHandler, 'bottom');
